@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -6,22 +7,41 @@ public class UIResourceDisplay : MonoBehaviour
     public enum ResourceType { Stardust, Aether }
     public ResourceType resourceType;
 
-    public TextMeshPro text;
+    public TMP_Text text;
 
-    void OnEnable()
+    private bool subscribed = false;
+
+    private void OnEnable()
     {
-        if (ResourceManager.I != null)
-            ResourceManager.I.OnChanged += Refresh;
-        Refresh();
+        // Start a routine that waits for ResourceManager to exist
+        StartCoroutine(ConnectWhenReady());
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
-        if (ResourceManager.I != null)
+        if (subscribed && ResourceManager.I != null)
             ResourceManager.I.OnChanged -= Refresh;
+
+        subscribed = false;
     }
 
-    void Refresh()
+    private IEnumerator ConnectWhenReady()
+    {
+        // Wait until ResourceManager.I is assigned
+        while (ResourceManager.I == null)
+            yield return null;
+
+        // Subscribe once
+        if (!subscribed)
+        {
+            ResourceManager.I.OnChanged += Refresh;
+            subscribed = true;
+        }
+
+        Refresh(); // update immediately once connected
+    }
+
+    private void Refresh()
     {
         if (text == null)
         {
