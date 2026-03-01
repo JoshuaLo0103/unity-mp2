@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ae275648d4745f84795af58f631ece33
+timeCreated: 1507996406
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 102756
+  packageName: Magical Rock
+  packageVersion: 1.0
+  assetPath: Assets/Magical Rock/Animations/Light@Intensity.anim
+  uploadId: 207304
