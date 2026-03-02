@@ -1,17 +1,22 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager I { get; private set; }
 
     [Header("Resources")]
-    public double stardust;
-    public double aether;
+    [FormerlySerializedAs("stardust")]
+    public double seed;
+    [FormerlySerializedAs("aether")]
+    public double crystal;
 
     [Header("Rates (per second)")]
-    public double stardustRate;
-    public double aetherRate;
+    [FormerlySerializedAs("stardustRate")]
+    public double seedRate;
+    [FormerlySerializedAs("aetherRate")]
+    public double crystalRate;
 
     public event Action OnChanged;
 
@@ -24,28 +29,58 @@ public class ResourceManager : MonoBehaviour
     private void Update()
     {
         float dt = Time.deltaTime;
-        stardust += stardustRate * dt;
-        aether   += aetherRate * dt;
+        seed += seedRate * dt;
+        crystal += crystalRate * dt;
         OnChanged?.Invoke();
     }
 
-    public bool TrySpendStardust(double amount)
+    public bool TrySpendSeed(double amount)
     {
-        if (stardust < amount) return false;
-        stardust -= amount;
+        if (seed < amount) return false;
+        seed -= amount;
         OnChanged?.Invoke();
         return true;
     }
 
-    public void AddStardustRate(double delta)
+    public void AddSeed(double amount)
     {
-        stardustRate += delta;
+        if (amount <= 0d) return;
+        seed += amount;
         OnChanged?.Invoke();
     }
 
-    public void AddAetherRate(double delta)
+    public void AddCrystal(double amount)
     {
-        aetherRate += delta;
+        if (amount <= 0d) return;
+        crystal += amount;
         OnChanged?.Invoke();
     }
+
+    public void AddSeedRate(double delta)
+    {
+        seedRate += delta;
+        OnChanged?.Invoke();
+    }
+
+    public void AddCrystalRate(double delta)
+    {
+        crystalRate += delta;
+        OnChanged?.Invoke();
+    }
+
+    // Compatibility helpers so existing UnityEvents or older scripts still work.
+    [Obsolete("Use TrySpendSeed instead.")]
+    public bool TrySpendStardust(double amount) => TrySpendSeed(amount);
+
+    [Obsolete("Use AddSeed instead.")]
+    public void AddStardust(double amount) => AddSeed(amount);
+
+    [Obsolete("Use AddCrystal instead.")]
+    public void AddAether(double amount) => AddCrystal(amount);
+
+    [Obsolete("Use AddSeedRate instead.")]
+    public void AddStardustRate(double delta) => AddSeedRate(delta);
+
+    [Obsolete("Use AddCrystalRate instead.")]
+    public void AddAetherRate(double delta) => AddCrystalRate(delta);
 }

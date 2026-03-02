@@ -99,3 +99,7 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# Local import not intended for repo
+/Assets/Sketchfab For Unity/
+/Assets/Sketchfab For Unity.meta

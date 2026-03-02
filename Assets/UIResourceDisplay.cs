@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UIResourceDisplay : MonoBehaviour
 {
-    public enum ResourceType { Stardust, Aether }
+    public enum ResourceType { Seed, Crystal }
     public ResourceType resourceType;
 
     public TMP_Text text;
@@ -51,13 +51,13 @@ public class UIResourceDisplay : MonoBehaviour
 
         if (ResourceManager.I == null)
         {
-            text.text = (resourceType == ResourceType.Stardust) ? "Stardust: --" : "Aether: --";
+            text.text = (resourceType == ResourceType.Seed) ? "Seed: --" : "Crystal: --";
             return;
         }
 
-        if (resourceType == ResourceType.Stardust)
-            text.text = $"Stardust: {ResourceManager.I.stardust:0}";
+        if (resourceType == ResourceType.Seed)
+            text.text = $"Seed: {ResourceManager.I.seed:0}";
         else
-            text.text = $"Aether: {ResourceManager.I.aether:0}";
+            text.text = $"Crystal: {ResourceManager.I.crystal:0}";
     }
 }

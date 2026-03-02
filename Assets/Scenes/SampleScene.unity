@@ -820,7 +820,7 @@ GameObject:
   - component: {fileID: 439844475}
   - component: {fileID: 439844474}
   m_Layer: 0
-  m_Name: StardustCounterDisplay
+  m_Name: SeedCounterDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -992,7 +992,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: aether
+  m_text: crystal
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1198,7 +1198,7 @@ GameObject:
   - component: {fileID: 775294044}
   - component: {fileID: 775294043}
   m_Layer: 0
-  m_Name: AetherCounterDisplay
+  m_Name: CrystalCounterDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1419,7 +1419,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'stardust
+  m_text: 'seed
 
 '
   m_isRightToLeft: 0
@@ -1574,10 +1574,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbf7fd85653c7184ea76a225f7207367, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  stardust: 10
-  aether: 10
-  stardustRate: 1
-  aetherRate: 1
+  seed: 10
+  crystal: 10
+  seedRate: 1
+  crystalRate: 1
 --- !u!4 &1231334600
 Transform:
   m_ObjectHideFlags: 0
@@ -1870,7 +1870,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1762197675
 Transform:
   m_ObjectHideFlags: 0
