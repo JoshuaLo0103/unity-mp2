@@ -62,7 +62,7 @@ public class SeedPortalDoor : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!unlocked || loading) return;
-        if (!other.CompareTag(playerTag)) return;
+        //if (!other.CompareTag(playerTag)) return;
 
         loading = true;
         SceneManager.LoadScene(targetSceneName);

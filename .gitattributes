@@ -1,0 +1,7 @@
+/Assets/@PaulosCreations/RunesAndPortals/Demo/ArenaFloorNorm_4096.tga filter=lfs diff=lfs merge=lfs -text
+/Assets/@PaulosCreations/RunesAndPortals/Demo/ArenaFloorT_4096.tga filter=lfs diff=lfs merge=lfs -text
+/Assets/@PaulosCreations/RunesAndPortals/PortalRound/TexturesMaterials/PortalRound_Normal.png filter=lfs diff=lfs merge=lfs -text
+/Assets/@PaulosCreations/RunesAndPortals/Props/TexturesMaterials/Props_Normal_GL.png filter=lfs diff=lfs merge=lfs -text
+/Assets/@PaulosCreations/RunesAndPortals/RuneStone/TexturesMaterials/RunePortal_Albedo.tga filter=lfs diff=lfs merge=lfs -text
+/Assets/@PaulosCreations/RunesAndPortals/RuneStone/TexturesMaterials/RunePortal_MetallicSmoothness.tga filter=lfs diff=lfs merge=lfs -text
+/Assets/@PaulosCreations/RunesAndPortals/RuneStone/TexturesMaterials/RunePortal_Normal.tga filter=lfs diff=lfs merge=lfs -text
