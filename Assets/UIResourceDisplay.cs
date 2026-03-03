@@ -7,6 +7,7 @@ public class UIResourcePanel : MonoBehaviour
     [Header("Text References")]
     public TMP_Text seedText;
     public TMP_Text crystalText;
+    public TMP_Text sporeCostText;
 
     private bool subscribed = false;
 
@@ -43,10 +44,12 @@ public class UIResourcePanel : MonoBehaviour
         {
             seedText.text = "Seed: --";
             crystalText.text = "Crystal: --";
+            sporeCostText.text = "Next Spore: --";
             return;
         }
 
         seedText.text = $"Seed: {ResourceManager.I.seed:0}";
         crystalText.text = $"Crystal: {ResourceManager.I.crystal:0}";
+        sporeCostText.text = $"Next Spore: {ResourceManager.I.CurrentSporeCost:0}";
     }
 }

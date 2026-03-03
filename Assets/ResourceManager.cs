@@ -18,6 +18,14 @@ public class ResourceManager : MonoBehaviour
     [FormerlySerializedAs("aetherRate")]
     public double crystalRate;
 
+    [Header("Planting Costs")]
+    public double baseSporeCost = 10;
+    public double sporeCostGrowth = 1.15;
+    public int plantedCount = 0;
+
+    public double CurrentSporeCost =>
+        baseSporeCost * Math.Pow(sporeCostGrowth, plantedCount);
+
     public event Action OnChanged;
 
     private void Awake()
