@@ -18,6 +18,9 @@ public class ResourceManager : MonoBehaviour
     [FormerlySerializedAs("aetherRate")]
     public double crystalRate;
 
+    [Header("Lifetime Progression")]
+    public double lifetimeSeedProduced;
+
     [Header("Planting Costs")]
     public double baseSporeCost = 10;
     public double sporeCostGrowth = 1.15;
@@ -32,12 +35,17 @@ public class ResourceManager : MonoBehaviour
     {
         if (I != null && I != this) { Destroy(gameObject); return; }
         I = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Update()
     {
         float dt = Time.deltaTime;
-        seed += seedRate * dt;
+        double seedDelta = seedRate * dt;
+        seed += seedDelta;
+        if (seedDelta > 0d)
+            lifetimeSeedProduced += seedDelta;
+
         crystal += crystalRate * dt;
         OnChanged?.Invoke();
     }
@@ -54,6 +62,7 @@ public class ResourceManager : MonoBehaviour
     {
         if (amount <= 0d) return;
         seed += amount;
+        lifetimeSeedProduced += amount;
         OnChanged?.Invoke();
     }
 
