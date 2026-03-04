@@ -61,9 +61,12 @@ public class SeedPortalDoor : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        //Debug.Log("Triggered by: " + other.name);
+        //Debug.Log("isunlocked: " + unlocked);
+        //Debug.Log("isloading: " + loading);
         if (!unlocked || loading) return;
         //if (!other.CompareTag(playerTag)) return;
-
+        //Debug.Log("teleporting");
         loading = true;
         SceneManager.LoadScene(targetSceneName);
     }
