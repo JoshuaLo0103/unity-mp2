@@ -1,16 +1,14 @@
 fileFormatVersion: 2
-guid: 21371dd6fe0354e41887111a25661da5
-AssetOrigin:
-  serializedVersion: 1
-  productId: 290047
-  packageName: Stylized Potted Plants
-  packageVersion: 1.0
-  assetPath: Assets/SandoraKa/Stylized Potted Plants/Meshes/Pot.fbx
-  uploadId: 681179
+guid: b38dc0c5fe3cac344ab011a80d8f252c
 ModelImporter:
-  serializedVersion: 24200
+  serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cosmic_Retro_Mesa_Props
+    second: {fileID: 2100000, guid: d31e38d56d57f2a4c9447c89e712fac8, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -23,6 +21,8 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -63,9 +63,6 @@ ModelImporter:
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
     optimizeBones: 1
-    generateMeshLods: 0
-    meshLodGenerationFlags: 0
-    maximumMeshLod: -1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
@@ -115,3 +112,10 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 325596
+  packageName: "Cosmic Retro \u2013 MESA Props FREE"
+  packageVersion: 1.0
+  assetPath: Assets/FREE/Cosmic_Retro_Mesa_Props_FREE/Models/Cosmic_retro_mesa_bench_short.fbx
+  uploadId: 770141
