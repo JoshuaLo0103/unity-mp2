@@ -12608,7 +12608,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18804bb8b4136c740a8f638b6e3dc483, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SeedPortalDoor
-  requiredSeeds: 40
+  requiredSeeds: 100
+  consumeSeedsOnFirstUnlock: 1
+  persistUnlockState: 1
+  unlockSaveKey: 
   targetSceneName: Demo
   portalVisual: {fileID: 1124732203}
   portalTrigger: {fileID: 773190232}
@@ -37547,7 +37550,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 77049143315873640, guid: 3f7ff1facedb7477eb4d34ed7e6ad27f, type: 3}
       propertyPath: requiredSeeds
-      value: 40
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1439631749515632888, guid: 3f7ff1facedb7477eb4d34ed7e6ad27f, type: 3}
       propertyPath: m_IsActive
