@@ -26357,20 +26357,20 @@ MonoBehaviour:
   viewerRotationOffsetEuler: {x: -90, y: 0, z: 0}
   milestones:
   - label: Bronze Trophy
-    requiredLifetimeSeed: 1000
-    requiredCrystal: 500
+    requiredLifetimeSeed: 100
+    requiredCrystal: 0
     trophyPrefab: {fileID: 8274962403625579571, guid: 0a099653f9f3944209c3cdd7ca22533e, type: 3}
     shelfSlot: {fileID: 632375026}
     unlocked: 0
   - label: Silver Trophy
-    requiredLifetimeSeed: 5000
-    requiredCrystal: 1000
+    requiredLifetimeSeed: 300
+    requiredCrystal: 0
     trophyPrefab: {fileID: 5838462943303065560, guid: 21741c94be735454f9bf2ab1de13e624, type: 3}
     shelfSlot: {fileID: 1569855837}
     unlocked: 0
   - label: Gold Trophy
-    requiredLifetimeSeed: 10000
-    requiredCrystal: 2000
+    requiredLifetimeSeed: 800
+    requiredCrystal: 0
     trophyPrefab: {fileID: 229304806069827346, guid: 5f9b3edc07c51438f88ce31cbc9efe86, type: 3}
     shelfSlot: {fileID: 969852792}
     unlocked: 0
