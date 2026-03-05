@@ -7,6 +7,11 @@ public class SeedPortalDoor : MonoBehaviour
     [Header("Requirement")]
     public double requiredSeeds = 100;
 
+    [Header("Unlock Cost Behavior")]
+    public bool consumeSeedsOnFirstUnlock = true;
+    public bool persistUnlockState = true;
+    public string unlockSaveKey = "";
+
     [Header("Scene to load")]
     public string targetSceneName;
 
@@ -19,12 +24,21 @@ public class SeedPortalDoor : MonoBehaviour
 
     private bool unlocked = false;
     private bool loading = false;
-
     private bool subscribed = false;
+    private string resolvedUnlockKey;
 
     private void Awake()
     {
-        // Start locked
+        resolvedUnlockKey = BuildUnlockKey();
+
+        if (persistUnlockState && PlayerPrefs.GetInt(resolvedUnlockKey, 0) == 1)
+        {
+            unlocked = true;
+            SetUnlocked(true);
+            return;
+        }
+
+        unlocked = false;
         SetUnlocked(false);
     }
 
@@ -63,15 +77,16 @@ public class SeedPortalDoor : MonoBehaviour
 
     private void CheckUnlock()
     {
-        //Debug.Log("Checking unlock: " + (ResourceManager.I != null ? ResourceManager.I.seed.ToString() : "RM null"));
-
         if (unlocked || ResourceManager.I == null) return;
 
         if (ResourceManager.I.seed >= requiredSeeds)
         {
-            //Debug.Log("Portal unlocked!");
+            if (consumeSeedsOnFirstUnlock && !ResourceManager.I.TrySpendSeed(requiredSeeds))
+                return;
+
             unlocked = true;
             SetUnlocked(true);
+            SaveUnlockState();
         }
     }
 
@@ -83,13 +98,39 @@ public class SeedPortalDoor : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //Debug.Log("Triggered by: " + other.name);
-        //Debug.Log("isunlocked: " + unlocked);
-        //Debug.Log("isloading: " + loading);
         if (!unlocked || loading) return;
-        //if (!other.CompareTag(playerTag)) return;
-        //Debug.Log("teleporting");
+        if (!other.CompareTag(playerTag)) return;
+
         loading = true;
         SceneManager.LoadScene(targetSceneName);
+    }
+
+    private string BuildUnlockKey()
+    {
+        if (!string.IsNullOrWhiteSpace(unlockSaveKey))
+            return unlockSaveKey;
+
+        return $"{SceneManager.GetActiveScene().path}:{GetTransformPath(transform)}:Unlocked";
+    }
+
+    private static string GetTransformPath(Transform t)
+    {
+        string path = t.name;
+        while (t.parent != null)
+        {
+            t = t.parent;
+            path = $"{t.name}/{path}";
+        }
+
+        return path;
+    }
+
+    private void SaveUnlockState()
+    {
+        if (!persistUnlockState)
+            return;
+
+        PlayerPrefs.SetInt(resolvedUnlockKey, 1);
+        PlayerPrefs.Save();
     }
 }
