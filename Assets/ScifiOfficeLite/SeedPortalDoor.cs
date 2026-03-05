@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class SeedPortalDoor : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class SeedPortalDoor : MonoBehaviour
     private bool unlocked = false;
     private bool loading = false;
 
+    private bool subscribed = false;
+
     private void Awake()
     {
         // Start locked
@@ -27,9 +30,23 @@ public class SeedPortalDoor : MonoBehaviour
 
     private void OnEnable()
     {
-        if (ResourceManager.I != null)
-            ResourceManager.I.OnChanged += CheckUnlock;
+        StartCoroutine(ConnectWhenReady());
     }
+
+    private IEnumerator ConnectWhenReady()
+    {
+        while (ResourceManager.I == null)
+            yield return null;
+
+        if (!subscribed)
+        {
+            ResourceManager.I.OnChanged += CheckUnlock;
+            subscribed = true;
+        }
+
+        CheckUnlock(); // run once after connecting
+    }
+
 
     private void Start()
     {
@@ -38,16 +55,21 @@ public class SeedPortalDoor : MonoBehaviour
 
     private void OnDisable()
     {
-        if (ResourceManager.I != null)
+        if (subscribed && ResourceManager.I != null)
             ResourceManager.I.OnChanged -= CheckUnlock;
+
+        subscribed = false;
     }
 
     private void CheckUnlock()
     {
+        //Debug.Log("Checking unlock: " + (ResourceManager.I != null ? ResourceManager.I.seed.ToString() : "RM null"));
+
         if (unlocked || ResourceManager.I == null) return;
 
         if (ResourceManager.I.seed >= requiredSeeds)
         {
+            //Debug.Log("Portal unlocked!");
             unlocked = true;
             SetUnlocked(true);
         }
