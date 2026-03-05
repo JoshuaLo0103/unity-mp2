@@ -2,19 +2,39 @@ using UnityEngine;
 
 public class TutorialPopup : MonoBehaviour
 {
+    public static TutorialPopup I;
+
     public GameObject tutorialPanel;
+
+    private bool tutorialShown = false;
+
+    void Awake()
+    {
+        // Singleton + persist across scenes
+        if (I != null && I != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        I = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     void Start()
     {
-        if (PlayerPrefs.GetInt("TutorialShown", 0) == 0) {
-            // Freeze gameplay
+        ShowIfNeeded();
+    }
+
+    private void ShowIfNeeded()
+    {
+        if (!tutorialShown)
+        {
             Time.timeScale = 0f;
             tutorialPanel.SetActive(true);
-
-            PlayerPrefs.SetInt("TutorialShown", 1);
-            PlayerPrefs.Save();
+            tutorialShown = true;
         }
-        else {
+        else
+        {
             tutorialPanel.SetActive(false);
         }
     }
@@ -22,8 +42,6 @@ public class TutorialPopup : MonoBehaviour
     public void CloseTutorial()
     {
         tutorialPanel.SetActive(false);
-
-        // Resume gameplay
         Time.timeScale = 1f;
     }
 }
