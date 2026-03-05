@@ -4184,9 +4184,8 @@ PrefabInstance:
         Strike the Mother Seed to gain extra Seed.\r\n\u2022 Plant in empty pots
         to increase passive generation.\r\n\u2022 Use Crystals to multiply plant
         output.\r\n\u2022 Reach 1,000 Seed to unlock the Crystal Chamber.\n\u2022
-        Bronze Trophy (1000 seeds & 500 crystals)\n\u2022 Silver Trophy (5000 seeds
-        & 1000 crystals)\n\u2022 Golden Trophy (10,000 seeds & 2000 crystals)\r\n\r\nPress
-        OK to begin."
+        Bronze Trophy (100 seeds)\n\u2022 Silver Trophy (300 seeds)\n\u2022 Golden
+        Trophy (800 seeds)\r\n\r\nPress OK to begin."
       objectReference: {fileID: 0}
     - target: {fileID: 2770022745517525663, guid: a9cec0c50375c3343b2c1a5b8a2d04dc, type: 3}
       propertyPath: m_Name
@@ -12586,7 +12585,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 8331897503624058196}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 773190229}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 1425136004}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -26622,6 +26621,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 111460904705254813, guid: 104ae5f4814b1b3488783ceb3d9782ab, type: 3}
   m_PrefabInstance: {fileID: 1412636360}
   m_PrefabAsset: {fileID: 0}
+--- !u!134 &1425136004
+PhysicsMaterial:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  serializedVersion: 2
+  m_DynamicFriction: 0.6
+  m_StaticFriction: 0.6
+  m_Bounciness: 0
+  m_FrictionCombine: 0
+  m_BounceCombine: 0
 --- !u!1001 &1436127283
 PrefabInstance:
   m_ObjectHideFlags: 0
