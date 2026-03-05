@@ -66,7 +66,7 @@ public class MotherCrystalClicker : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //if (!other.CompareTag(handTag)) return;
+        if (!other.CompareTag(handTag)) return;
         Debug.Log($"[Clicker] OnTriggerEnter: me={name} other={other.name} tag={other.tag} layer={LayerMask.LayerToName(other.gameObject.layer)} isTrigger={other.isTrigger}");
         TryClick();
     }
@@ -109,14 +109,14 @@ public class MotherCrystalClicker : MonoBehaviour
     private void UpdateRing(float normalized)
     {
         if (cooldownRing == null) return;
-
+        Debug.Log("updating color");
         cooldownRing.fillAmount = normalized;
         cooldownRing.color = Color.Lerp(ringCoolingColor, ringReadyColor, normalized);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        //if (!collision.collider.CompareTag(handTag)) return;
+        if (!collision.collider.CompareTag(handTag)) return;
         var other = collision.collider;
         Debug.Log($"[Clicker] OnCollisionEnter: me={name} other={other.name} tag={other.tag} layer={LayerMask.LayerToName(other.gameObject.layer)} relVel={collision.relativeVelocity.magnitude:F3}");
         TryClick();

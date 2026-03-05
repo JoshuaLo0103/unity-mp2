@@ -12,6 +12,8 @@ public class ResourceManager : MonoBehaviour
     [FormerlySerializedAs("aether")]
     public double crystal;
 
+    public bool seedPortalUnlocked = false;
+    
     [Header("Rates (per second)")]
     [FormerlySerializedAs("stardustRate")]
     public double seedRate;

@@ -3548,15 +3548,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 52edbe9f031214c809be7219c792525b, type: 2}
     - target: {fileID: -5066493223152278515, guid: 82dcc0817a8784aa7a25e0f7e136aa46, type: 3}
       propertyPath: m_LocalScale.x
-      value: 280.1315
+      value: 70.161
       objectReference: {fileID: 0}
     - target: {fileID: -5066493223152278515, guid: 82dcc0817a8784aa7a25e0f7e136aa46, type: 3}
       propertyPath: m_LocalScale.y
-      value: 520.4638
-      objectReference: {fileID: 0}
-    - target: {fileID: -5066493223152278515, guid: 82dcc0817a8784aa7a25e0f7e136aa46, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 279.48865
+      value: 130.354
       objectReference: {fileID: 0}
     - target: {fileID: -5066493223152278515, guid: 82dcc0817a8784aa7a25e0f7e136aa46, type: 3}
       propertyPath: m_LocalPosition.x
@@ -12596,7 +12592,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -20574,7 +20570,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   seed: 10
   crystal: 10
-  seedPortalUnlocked: 0
   seedRate: 1
   crystalRate: 1
   lifetimeSeedProduced: 0
@@ -37556,10 +37551,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1439631749515632888, guid: 3f7ff1facedb7477eb4d34ed7e6ad27f, type: 3}
       propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1696172562685524133, guid: 3f7ff1facedb7477eb4d34ed7e6ad27f, type: 3}
-      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8181552662603272441, guid: 3f7ff1facedb7477eb4d34ed7e6ad27f, type: 3}

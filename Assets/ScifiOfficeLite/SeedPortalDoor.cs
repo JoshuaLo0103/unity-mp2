@@ -7,43 +7,30 @@ public class SeedPortalDoor : MonoBehaviour
     [Header("Requirement")]
     public double requiredSeeds = 100;
 
-    [Header("Unlock Cost Behavior")]
-    public bool consumeSeedsOnFirstUnlock = true;
-    public bool persistUnlockState = true;
-    public string unlockSaveKey = "";
-
     [Header("Scene to load")]
     public string targetSceneName;
 
     [Header("What to enable when unlocked")]
-    public GameObject portalVisual;    
+    public GameObject portalVisual;     // visuals (mesh/vfx). KEEP THIS as a CHILD, not the object with this script
     public Collider portalTrigger;      // trigger collider to walk through
 
     [Header("Player detection")]
-    public string playerTag = "Player"; 
+    public string playerTag = "Player";
 
     private bool unlocked = false;
     private bool loading = false;
     private bool subscribed = false;
-    private string resolvedUnlockKey;
 
     private void Awake()
     {
-        resolvedUnlockKey = BuildUnlockKey();
-
-        if (persistUnlockState && PlayerPrefs.GetInt(resolvedUnlockKey, 0) == 1)
-        {
-            unlocked = true;
-            SetUnlocked(true);
-            return;
-        }
-
-        unlocked = false;
-        SetUnlocked(false);
+        loading = false;
+        unlocked = (ResourceManager.I != null && ResourceManager.I.seedPortalUnlocked);
+        SetUnlocked(unlocked);
     }
 
     private void OnEnable()
     {
+        // Always start; coroutine will wait until ResourceManager exists
         StartCoroutine(ConnectWhenReady());
     }
 
@@ -61,10 +48,10 @@ public class SeedPortalDoor : MonoBehaviour
         CheckUnlock(); // run once after connecting
     }
 
-
     private void Start()
     {
-        CheckUnlock(); 
+        // In case RM already exists and OnChanged won't fire immediately
+        CheckUnlock();
     }
 
     private void OnDisable()
@@ -81,59 +68,41 @@ public class SeedPortalDoor : MonoBehaviour
 
         if (ResourceManager.I.seed >= requiredSeeds)
         {
-            if (consumeSeedsOnFirstUnlock && !ResourceManager.I.TrySpendSeed(requiredSeeds))
-                return;
-
+            ResourceManager.I.TrySpendSeed(requiredSeeds);
             unlocked = true;
+            ResourceManager.I.seedPortalUnlocked = true;
             SetUnlocked(true);
-            SaveUnlockState();
+            //Debug.Log($"[Portal] Unlocked at seed={ResourceManager.I.seed} (req={requiredSeeds})");
+        }
+        else
+        {
+            // Optional debug:
+            // Debug.Log($"[Portal] Locked seed={ResourceManager.I.seed}/{requiredSeeds}");
         }
     }
 
     private void SetUnlocked(bool on)
     {
-        // Only show door when requirement met (on=true). Hide when locked (on=false).
-        // Fallback to this GameObject if portalVisual is unassigned.
-        GameObject visualToToggle = portalVisual != null ? portalVisual : gameObject;
-        visualToToggle.SetActive(on);
+        if (portalVisual != null) portalVisual.SetActive(on);
         if (portalTrigger != null) portalTrigger.enabled = on;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (!unlocked || loading) return;
-        if (!other.CompareTag(playerTag)) return;
 
-        loading = true;
-        SceneManager.LoadScene(targetSceneName);
-    }
+        // XR: often a child collider enters; accept if any parent is tagged Player
+        bool isPlayer = other.CompareTag(playerTag) || (other.transform.root != null && other.transform.root.CompareTag(playerTag));
+        if (!isPlayer) return;
 
-    private string BuildUnlockKey()
-    {
-        if (!string.IsNullOrWhiteSpace(unlockSaveKey))
-            return unlockSaveKey;
-
-        return $"{SceneManager.GetActiveScene().path}:{GetTransformPath(transform)}:Unlocked";
-    }
-
-    private static string GetTransformPath(Transform t)
-    {
-        string path = t.name;
-        while (t.parent != null)
+        if (string.IsNullOrWhiteSpace(targetSceneName))
         {
-            t = t.parent;
-            path = $"{t.name}/{path}";
+            Debug.LogError("[Portal] targetSceneName is empty.");
+            return;
         }
 
-        return path;
-    }
-
-    private void SaveUnlockState()
-    {
-        if (!persistUnlockState)
-            return;
-
-        PlayerPrefs.SetInt(resolvedUnlockKey, 1);
-        PlayerPrefs.Save();
+        loading = true;
+        Debug.Log($"[Portal] Loading scene '{targetSceneName}'");
+        SceneManager.LoadScene(targetSceneName);
     }
 }
