@@ -92,7 +92,10 @@ public class SeedPortalDoor : MonoBehaviour
 
     private void SetUnlocked(bool on)
     {
-        if (portalVisual != null) portalVisual.SetActive(on);
+        // Only show door when requirement met (on=true). Hide when locked (on=false).
+        // Fallback to this GameObject if portalVisual is unassigned.
+        GameObject visualToToggle = portalVisual != null ? portalVisual : gameObject;
+        visualToToggle.SetActive(on);
         if (portalTrigger != null) portalTrigger.enabled = on;
     }
 
