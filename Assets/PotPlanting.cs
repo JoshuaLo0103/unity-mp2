@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public class PotPlanting : MonoBehaviour
 {
@@ -20,6 +22,10 @@ public class PotPlanting : MonoBehaviour
     [Header("Pot Growth")]
     public float potScaleFactor = 1.0f;            // 1.0 = same growth as plant, 0.9 = slightly less
 
+    [Header("Haptics")]
+    [SerializeField] private float plantHapticAmplitude = 0.7f;
+    [SerializeField] private float plantHapticDuration = 0.12f;
+
     private bool planted = false;
 
     // per-pot state
@@ -29,6 +35,8 @@ public class PotPlanting : MonoBehaviour
 
     private Vector3 plantStartScale = Vector3.one;
     private Vector3 potStartScale = Vector3.one;
+
+    public bool IsPlanted => planted;
 
     private void Start()
     {
@@ -70,6 +78,8 @@ public class PotPlanting : MonoBehaviour
         if (plantVisual != null)
             plantVisual.SetActive(true);
 
+        SendPlantSuccessHaptics(other);
+
         // remove spore
         Collider col = other.GetComponent<Collider>();
         if (col != null) col.enabled = false;
@@ -79,17 +89,28 @@ public class PotPlanting : MonoBehaviour
     // called by CrystalSlotPowerUp
     public bool TryApplyCrystal()
     {
+        return TryApplyPurchasedMultiplier(perCrystalMultiplier);
+    }
+
+    public bool CanApplyPurchasedMultiplier(double factor)
+    {
         if (!planted) return false;
         if (ResourceManager.I == null) return false;
+        if (factor <= 1d) return false;
 
-        // compute new multiplier with cap
-        double newMultiplier = currentMultiplier * perCrystalMultiplier;
+        double newMultiplier = currentMultiplier * factor;
         if (newMultiplier > maxTotalMultiplier) newMultiplier = maxTotalMultiplier;
 
-        // if already capped, do nothing
-        if (newMultiplier <= currentMultiplier) return false;
+        return newMultiplier > currentMultiplier;
+    }
 
-        // add only the extra contribution for THIS pot
+    public bool TryApplyPurchasedMultiplier(double factor)
+    {
+        if (!CanApplyPurchasedMultiplier(factor)) return false;
+
+        double newMultiplier = currentMultiplier * factor;
+        if (newMultiplier > maxTotalMultiplier) newMultiplier = maxTotalMultiplier;
+
         double newContribution = seedRateBase * newMultiplier;
         double delta = newContribution - currentContribution;
 
@@ -98,7 +119,6 @@ public class PotPlanting : MonoBehaviour
 
         ResourceManager.I.AddSeedRate(delta);
 
-        // grow visuals (capped)
         crystalsApplied += 1;
         GrowVisuals();
 
@@ -117,5 +137,25 @@ public class PotPlanting : MonoBehaviour
         // pot grows too
         if (potVisual != null)
             potVisual.localScale = potStartScale * (targetScaleMult * potScaleFactor);
+    }
+
+    private void SendPlantSuccessHaptics(Collider sporeCollider)
+    {
+        GrabHapticRelay hapticRelay = sporeCollider.GetComponentInParent<GrabHapticRelay>();
+        if (hapticRelay != null)
+        {
+            hapticRelay.SendHapticImpulse(plantHapticAmplitude, plantHapticDuration);
+            return;
+        }
+
+        XRGrabInteractable grabInteractable = sporeCollider.GetComponentInParent<XRGrabInteractable>();
+        if (grabInteractable == null)
+            return;
+
+        IXRSelectInteractor selectingInteractor =
+            grabInteractable.GetOldestInteractorSelecting() ?? grabInteractable.firstInteractorSelecting;
+
+        if (selectingInteractor is XRBaseInputInteractor inputInteractor)
+            inputInteractor.SendHapticImpulse(plantHapticAmplitude, plantHapticDuration);
     }
 }

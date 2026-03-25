@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7092755788104481526}
   - component: {fileID: 2182049461998243508}
   - component: {fileID: 3349119649920892448}
+  - component: {fileID: 4306355937150734815}
   m_Layer: 0
   m_Name: AsteroidSpore
   m_TagString: Spore
@@ -270,3 +271,15 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.9975055
   m_Center: {x: -0.0075974464, y: -0.00007116794, z: -0.009487152}
+--- !u!114 &4306355937150734815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3707572494035443669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2d91755d18f34117a60300f6b21ad60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GrabHapticRelay
