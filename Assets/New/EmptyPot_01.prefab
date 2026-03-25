@@ -30,6 +30,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
+  - {fileID: 483950117200185055}
   - {fileID: 3992052945228545745}
   - {fileID: 2348162262481346582}
   - {fileID: -3910990755373119420}
@@ -124,6 +125,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrystalSlotPowerUp
   targetPot: {fileID: 5830756658461095250}
+  powerUpHapticAmplitude: 0.9
+  powerUpHapticDuration: 1
   powerUpSuccessClip: {fileID: 8300000, guid: cfff3cabc21074d5b847294c00f1aef1, type: 3}
   powerUpSoundVolume: 1
   powerUpSoundSpatialBlend: 1
@@ -294,6 +297,13 @@ MonoBehaviour:
   perCrystalScaleMultiplier: 1.15
   maxScaleMultiplier: 2
   potScaleFactor: 0.8
+  plantPopDuration: 1
+  startPlantScaleMultiplier: 0.02
+  riseDistance: 0.12
+  crystalGrowDuration: 0.4
+  plantParticles: {fileID: 6102327947552977063}
+  plantHapticAmplitude: 0.7
+  plantHapticDuration: 0.5
   plantSuccessClip: {fileID: 8300000, guid: 16fba6d30ed741d4a9fdd6e79ee2f3ac, type: 3}
   plantSoundVolume: 1
   plantSoundSpatialBlend: 1
@@ -513,3 +523,70 @@ Transform:
   - {fileID: -1842687647592249246}
   m_Father: {fileID: 111460904705254813}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1607041404265069377
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 111460904705254813}
+    m_Modifications:
+    - target: {fileID: 45120889029072726, guid: 096f6dac35616754e836e25cbbbb8e0e, type: 3}
+      propertyPath: m_Name
+      value: PlantBurstParticles
+      objectReference: {fileID: 0}
+    - target: {fileID: 1223305323048713630, guid: 096f6dac35616754e836e25cbbbb8e0e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1223305323048713630, guid: 096f6dac35616754e836e25cbbbb8e0e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.736
+      objectReference: {fileID: 0}
+    - target: {fileID: 1223305323048713630, guid: 096f6dac35616754e836e25cbbbb8e0e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1223305323048713630, guid: 096f6dac35616754e836e25cbbbb8e0e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1223305323048713630, guid: 096f6dac35616754e836e25cbbbb8e0e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1223305323048713630, guid: 096f6dac35616754e836e25cbbbb8e0e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1223305323048713630, guid: 096f6dac35616754e836e25cbbbb8e0e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1223305323048713630, guid: 096f6dac35616754e836e25cbbbb8e0e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1223305323048713630, guid: 096f6dac35616754e836e25cbbbb8e0e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1223305323048713630, guid: 096f6dac35616754e836e25cbbbb8e0e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 096f6dac35616754e836e25cbbbb8e0e, type: 3}
+--- !u!4 &483950117200185055 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1223305323048713630, guid: 096f6dac35616754e836e25cbbbb8e0e, type: 3}
+  m_PrefabInstance: {fileID: 1607041404265069377}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &6102327947552977063 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 4819565507936324582, guid: 096f6dac35616754e836e25cbbbb8e0e, type: 3}
+  m_PrefabInstance: {fileID: 1607041404265069377}
+  m_PrefabAsset: {fileID: 0}
