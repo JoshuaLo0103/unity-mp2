@@ -17,13 +17,23 @@ public class SeedPortalDoor : MonoBehaviour
     [Header("Player detection")]
     public string playerTag = "Player";
 
+    [Header("Unlock Sound")]
+    [SerializeField] private AudioClip unlockClip;
+    [SerializeField] [Range(0f, 1f)] private float unlockVolume = 1f;
+    [SerializeField] [Range(0f, 1f)] private float unlockSpatialBlend = 1f;
+    [SerializeField] private float unlockMinDistance = 4f;
+    [SerializeField] private float unlockMaxDistance = 30f;
+    [SerializeField] private AudioRolloffMode unlockRolloffMode = AudioRolloffMode.Linear;
+
     private bool unlocked = false;
     private bool loading = false;
     private bool subscribed = false;
+    private AudioSource unlockAudioSource;
 
     private void Awake()
     {
         loading = false;
+        EnsureUnlockAudioSource();
         unlocked = (ResourceManager.I != null && ResourceManager.I.seedPortalUnlocked);
         SetUnlocked(unlocked);
     }
@@ -68,10 +78,13 @@ public class SeedPortalDoor : MonoBehaviour
 
         if (ResourceManager.I.seed >= requiredSeeds)
         {
-            ResourceManager.I.TrySpendSeed(requiredSeeds);
+            if (!ResourceManager.I.TrySpendSeed(requiredSeeds))
+                return;
+
             unlocked = true;
             ResourceManager.I.seedPortalUnlocked = true;
             SetUnlocked(true);
+            PlayUnlockSound();
             //Debug.Log($"[Portal] Unlocked at seed={ResourceManager.I.seed} (req={requiredSeeds})");
         }
         else
@@ -104,5 +117,42 @@ public class SeedPortalDoor : MonoBehaviour
         loading = true;
         Debug.Log($"[Portal] Loading scene '{targetSceneName}'");
         SceneManager.LoadScene(targetSceneName);
+    }
+
+    private void OnValidate()
+    {
+        unlockMinDistance = Mathf.Max(0.01f, unlockMinDistance);
+        unlockMaxDistance = Mathf.Max(unlockMinDistance, unlockMaxDistance);
+
+        if (unlockAudioSource != null)
+            ConfigureUnlockAudioSource();
+    }
+
+    private void EnsureUnlockAudioSource()
+    {
+        if (!TryGetComponent(out unlockAudioSource))
+            unlockAudioSource = gameObject.AddComponent<AudioSource>();
+
+        ConfigureUnlockAudioSource();
+    }
+
+    private void ConfigureUnlockAudioSource()
+    {
+        unlockAudioSource.playOnAwake = false;
+        unlockAudioSource.loop = false;
+        unlockAudioSource.spatialBlend = unlockSpatialBlend;
+        unlockAudioSource.minDistance = unlockMinDistance;
+        unlockAudioSource.maxDistance = unlockMaxDistance;
+        unlockAudioSource.rolloffMode = unlockRolloffMode;
+        unlockAudioSource.dopplerLevel = 0f;
+    }
+
+    private void PlayUnlockSound()
+    {
+        if (unlockClip == null)
+            return;
+
+        EnsureUnlockAudioSource();
+        unlockAudioSource.PlayOneShot(unlockClip, unlockVolume);
     }
 }

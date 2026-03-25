@@ -8,7 +8,15 @@ public class CrystalSlotPowerUp : MonoBehaviour
 
     [Header("Haptics")]
     [SerializeField] private float powerUpHapticAmplitude = 0.9f;
-    [SerializeField] private float powerUpHapticDuration = 0.16f;
+    [SerializeField] private float powerUpHapticDuration = 1f;
+
+    [Header("Sound")]
+    [SerializeField] private AudioClip powerUpSuccessClip;
+    [SerializeField] [Range(0f, 1f)] private float powerUpSoundVolume = 1f;
+    [SerializeField] [Range(0f, 1f)] private float powerUpSoundSpatialBlend = 1f;
+    [SerializeField] private float powerUpSoundMinDistance = 3f;
+    [SerializeField] private float powerUpSoundMaxDistance = 18f;
+    [SerializeField] private AudioRolloffMode powerUpSoundRolloffMode = AudioRolloffMode.Linear;
 
     private void Reset()
     {
@@ -28,6 +36,7 @@ public class CrystalSlotPowerUp : MonoBehaviour
         if (!applied) return;
 
         SendPowerUpSuccessHaptics(other);
+        PlayPowerUpSuccessSound();
 
         // disappear
         Collider col = other.GetComponent<Collider>();
@@ -53,5 +62,17 @@ public class CrystalSlotPowerUp : MonoBehaviour
 
         if (selectingInteractor is XRBaseInputInteractor inputInteractor)
             inputInteractor.SendHapticImpulse(powerUpHapticAmplitude, powerUpHapticDuration);
+    }
+
+    private void PlayPowerUpSuccessSound()
+    {
+        OneShotSpatialAudio.Play(
+            powerUpSuccessClip,
+            transform.position,
+            powerUpSoundVolume,
+            powerUpSoundSpatialBlend,
+            powerUpSoundMinDistance,
+            powerUpSoundMaxDistance,
+            powerUpSoundRolloffMode);
     }
 }

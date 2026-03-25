@@ -24,7 +24,15 @@ public class PotPlanting : MonoBehaviour
 
     [Header("Haptics")]
     [SerializeField] private float plantHapticAmplitude = 0.7f;
-    [SerializeField] private float plantHapticDuration = 0.12f;
+    [SerializeField] private float plantHapticDuration = 0.5f;
+
+    [Header("Sound")]
+    [SerializeField] private AudioClip plantSuccessClip;
+    [SerializeField] [Range(0f, 1f)] private float plantSoundVolume = 1f;
+    [SerializeField] [Range(0f, 1f)] private float plantSoundSpatialBlend = 1f;
+    [SerializeField] private float plantSoundMinDistance = 2f;
+    [SerializeField] private float plantSoundMaxDistance = 14f;
+    [SerializeField] private AudioRolloffMode plantSoundRolloffMode = AudioRolloffMode.Linear;
 
     private bool planted = false;
 
@@ -79,6 +87,7 @@ public class PotPlanting : MonoBehaviour
             plantVisual.SetActive(true);
 
         SendPlantSuccessHaptics(other);
+        PlayPlantSuccessSound();
 
         // remove spore
         Collider col = other.GetComponent<Collider>();
@@ -157,5 +166,17 @@ public class PotPlanting : MonoBehaviour
 
         if (selectingInteractor is XRBaseInputInteractor inputInteractor)
             inputInteractor.SendHapticImpulse(plantHapticAmplitude, plantHapticDuration);
+    }
+
+    private void PlayPlantSuccessSound()
+    {
+        OneShotSpatialAudio.Play(
+            plantSuccessClip,
+            transform.position,
+            plantSoundVolume,
+            plantSoundSpatialBlend,
+            plantSoundMinDistance,
+            plantSoundMaxDistance,
+            plantSoundRolloffMode);
     }
 }

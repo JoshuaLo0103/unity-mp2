@@ -124,6 +124,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrystalSlotPowerUp
   targetPot: {fileID: 5830756658461095250}
+  powerUpSuccessClip: {fileID: 8300000, guid: cfff3cabc21074d5b847294c00f1aef1, type: 3}
+  powerUpSoundVolume: 1
+  powerUpSoundSpatialBlend: 1
+  powerUpSoundMinDistance: 3
+  powerUpSoundMaxDistance: 18
+  powerUpSoundRolloffMode: 1
 --- !u!1 &4336209617023820907
 GameObject:
   m_ObjectHideFlags: 0
@@ -288,6 +294,12 @@ MonoBehaviour:
   perCrystalScaleMultiplier: 1.15
   maxScaleMultiplier: 2
   potScaleFactor: 0.8
+  plantSuccessClip: {fileID: 8300000, guid: 16fba6d30ed741d4a9fdd6e79ee2f3ac, type: 3}
+  plantSoundVolume: 1
+  plantSoundSpatialBlend: 1
+  plantSoundMinDistance: 2
+  plantSoundMaxDistance: 14
+  plantSoundRolloffMode: 1
 --- !u!1 &5550369310309346160
 GameObject:
   m_ObjectHideFlags: 0
