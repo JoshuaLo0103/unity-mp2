@@ -46,17 +46,13 @@ public class PotPlanting : MonoBehaviour
     [SerializeField] private float plantSoundMaxDistance = 14f;
     [SerializeField] private AudioRolloffMode plantSoundRolloffMode = AudioRolloffMode.Linear;
 
-    private bool planted = false;
-
-    // per-pot state
+    private bool planted;
     private double currentMultiplier = 1.0;
-    private double currentContribution = 0.0;
-    private int crystalsApplied = 0;
-
+    private double currentContribution;
+    private int crystalsApplied;
     private Vector3 plantStartScale = Vector3.one;
     private Vector3 potStartScale = Vector3.one;
     private Vector3 plantStartLocalPosition = Vector3.zero;
-
     private Coroutine plantAnimationCoroutine;
     private Coroutine crystalAnimationCoroutine;
 
@@ -72,24 +68,20 @@ public class PotPlanting : MonoBehaviour
         }
 
         if (potVisual != null)
-        {
             potStartScale = potVisual.localScale;
-        }
 
         if (plantParticles != null)
-        {
             plantParticles.Stop();
-        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (planted) return;
-        if (!other.CompareTag("Spore")) return;
-        if (ResourceManager.I == null) return;
+        if (planted || !other.CompareTag("Spore") || ResourceManager.I == null)
+            return;
 
         Rigidbody rb = other.attachedRigidbody;
-        if (rb != null && rb.isKinematic) return;
+        if (rb != null && rb.isKinematic)
+            return;
 
         double cost = ResourceManager.I.CurrentSporeCost;
         if (!ResourceManager.I.TrySpendSeed(cost))
@@ -113,8 +105,13 @@ public class PotPlanting : MonoBehaviour
         }
 
         PlayPlantingFeedback();
+        SendPlantSuccessHaptics(other);
+        PlayPlantSuccessSound();
+
         Collider col = other.GetComponent<Collider>();
-        if (col != null) col.enabled = false;
+        if (col != null)
+            col.enabled = false;
+
         Destroy(other.gameObject);
     }
 
@@ -125,24 +122,24 @@ public class PotPlanting : MonoBehaviour
 
     public bool CanApplyPurchasedMultiplier(double factor)
     {
-        if (!planted) return false;
-        if (ResourceManager.I == null) return false;
-        if (factor <= 1d) return false;
+        if (!planted || ResourceManager.I == null || factor <= 1d)
+            return false;
 
         double newMultiplier = currentMultiplier * factor;
-        if (newMultiplier > maxTotalMultiplier) newMultiplier = maxTotalMultiplier;
+        if (newMultiplier > maxTotalMultiplier)
+            newMultiplier = maxTotalMultiplier;
 
         return newMultiplier > currentMultiplier;
     }
 
     public bool TryApplyPurchasedMultiplier(double factor)
     {
-        if (!CanApplyPurchasedMultiplier(factor)) return false;
+        if (!CanApplyPurchasedMultiplier(factor))
+            return false;
 
         double newMultiplier = currentMultiplier * factor;
-        if (newMultiplier > maxTotalMultiplier) newMultiplier = maxTotalMultiplier;
-
-        if (newMultiplier <= currentMultiplier) return false;
+        if (newMultiplier > maxTotalMultiplier)
+            newMultiplier = maxTotalMultiplier;
 
         double newContribution = seedRateBase * newMultiplier;
         double delta = newContribution - currentContribution;
@@ -161,16 +158,13 @@ public class PotPlanting : MonoBehaviour
     private void PlayPlantingFeedback()
     {
         if (plantParticles != null)
-        {
             plantParticles.Play();
-        }
     }
 
     private IEnumerator AnimatePlantOnPlanting()
     {
         Vector3 startScale = plantStartScale * startPlantScaleMultiplier;
         Vector3 targetScale = plantStartScale;
-
         Vector3 startPos = plantStartLocalPosition + Vector3.down * riseDistance;
         Vector3 targetPos = plantStartLocalPosition;
 
@@ -178,7 +172,6 @@ public class PotPlanting : MonoBehaviour
         plantVisual.transform.localPosition = startPos;
 
         float elapsed = 0f;
-
         while (elapsed < plantPopDuration)
         {
             elapsed += Time.deltaTime;
@@ -193,7 +186,6 @@ public class PotPlanting : MonoBehaviour
 
         plantVisual.transform.localScale = targetScale;
         plantVisual.transform.localPosition = targetPos;
-
         plantAnimationCoroutine = null;
     }
 
@@ -218,7 +210,6 @@ public class PotPlanting : MonoBehaviour
         Vector3 potInitialScale = potVisual != null ? potVisual.localScale : Vector3.one;
 
         float elapsed = 0f;
-
         while (elapsed < crystalGrowDuration)
         {
             elapsed += Time.deltaTime;
@@ -249,7 +240,7 @@ public class PotPlanting : MonoBehaviour
         crystalAnimationCoroutine = null;
     }
 
-    private float EaseOutBack(float t)
+    private static float EaseOutBack(float t)
     {
         float c1 = 1.70158f;
         float c3 = c1 + 1f;
