@@ -1,24 +1,36 @@
+using System.Collections;
 using UnityEngine;
 
 public class PotPlanting : MonoBehaviour
 {
     [Header("Plant Output")]
-    public double seedRateBase = 1.0;          // base contribution when planted
-    public double perCrystalMultiplier = 1.5;  // each crystal multiplies this plant by this factor
-    public double maxTotalMultiplier = 10.0;   // cap so it doesn't go infinite
+    public double seedRateBase = 1.0;
+    public double perCrystalMultiplier = 1.5;
+    public double maxTotalMultiplier = 10.0;
 
     [Header("Visuals")]
     public GameObject plantVisual;
 
     [Header("Pot Visual")]
-    public Transform potVisual;                // drag PotBig here (or whatever your pot mesh is)
+    public Transform potVisual;
 
     [Header("Plant Growth")]
-    public float perCrystalScaleMultiplier = 1.15f; // each crystal grows plant by 15%
-    public float maxScaleMultiplier = 2.0f;         // cap (2x original size)
+    public float perCrystalScaleMultiplier = 1.15f;
+    public float maxScaleMultiplier = 2.0f;
 
     [Header("Pot Growth")]
-    public float potScaleFactor = 1.0f;            // 1.0 = same growth as plant, 0.9 = slightly less
+    public float potScaleFactor = 1.0f;
+
+    [Header("Planting Ease Animation")]
+    public float plantPopDuration = 1.0f;
+    public float startPlantScaleMultiplier = 0.02f;
+    public float riseDistance = 0.12f;
+
+    [Header("Crystal Ease Animation")]
+    public float crystalGrowDuration = 0.4f;
+
+    [Header("Planting Particles")]
+    public ParticleSystem plantParticles;
 
     private bool planted = false;
 
@@ -29,18 +41,28 @@ public class PotPlanting : MonoBehaviour
 
     private Vector3 plantStartScale = Vector3.one;
     private Vector3 potStartScale = Vector3.one;
+    private Vector3 plantStartLocalPosition = Vector3.zero;
+
+    private Coroutine plantAnimationCoroutine;
+    private Coroutine crystalAnimationCoroutine;
 
     private void Start()
     {
         if (plantVisual != null)
         {
             plantStartScale = plantVisual.transform.localScale;
+            plantStartLocalPosition = plantVisual.transform.localPosition;
             plantVisual.SetActive(false);
         }
 
         if (potVisual != null)
         {
             potStartScale = potVisual.localScale;
+        }
+
+        if (plantParticles != null)
+        {
+            plantParticles.Stop();
         }
     }
 
@@ -50,7 +72,6 @@ public class PotPlanting : MonoBehaviour
         if (!other.CompareTag("Spore")) return;
         if (ResourceManager.I == null) return;
 
-        // If still being held, ignore
         Rigidbody rb = other.attachedRigidbody;
         if (rb != null && rb.isKinematic) return;
 
@@ -61,35 +82,37 @@ public class PotPlanting : MonoBehaviour
         planted = true;
         ResourceManager.I.plantedCount += 1;
 
-        // start contribution
         currentMultiplier = 1.0;
         currentContribution = seedRateBase * currentMultiplier;
         ResourceManager.I.AddSeedRate(currentContribution);
 
-        // show plant
         if (plantVisual != null)
+        {
             plantVisual.SetActive(true);
 
-        // remove spore
+            if (plantAnimationCoroutine != null)
+                StopCoroutine(plantAnimationCoroutine);
+
+            plantAnimationCoroutine = StartCoroutine(AnimatePlantOnPlanting());
+        }
+
+        PlayPlantingFeedback();
+
         Collider col = other.GetComponent<Collider>();
         if (col != null) col.enabled = false;
         Destroy(other.gameObject);
     }
 
-    // called by CrystalSlotPowerUp
     public bool TryApplyCrystal()
     {
         if (!planted) return false;
         if (ResourceManager.I == null) return false;
 
-        // compute new multiplier with cap
         double newMultiplier = currentMultiplier * perCrystalMultiplier;
         if (newMultiplier > maxTotalMultiplier) newMultiplier = maxTotalMultiplier;
 
-        // if already capped, do nothing
         if (newMultiplier <= currentMultiplier) return false;
 
-        // add only the extra contribution for THIS pot
         double newContribution = seedRateBase * newMultiplier;
         double delta = newContribution - currentContribution;
 
@@ -98,24 +121,107 @@ public class PotPlanting : MonoBehaviour
 
         ResourceManager.I.AddSeedRate(delta);
 
-        // grow visuals (capped)
         crystalsApplied += 1;
-        GrowVisuals();
+        AnimateCrystalGrowth();
 
         return true;
     }
 
-    private void GrowVisuals()
+    private void PlayPlantingFeedback()
+    {
+        if (plantParticles != null)
+        {
+            plantParticles.Play();
+        }
+    }
+
+    private IEnumerator AnimatePlantOnPlanting()
+    {
+        Vector3 startScale = plantStartScale * startPlantScaleMultiplier;
+        Vector3 targetScale = plantStartScale;
+
+        Vector3 startPos = plantStartLocalPosition + Vector3.down * riseDistance;
+        Vector3 targetPos = plantStartLocalPosition;
+
+        plantVisual.transform.localScale = startScale;
+        plantVisual.transform.localPosition = startPos;
+
+        float elapsed = 0f;
+
+        while (elapsed < plantPopDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / plantPopDuration);
+            float easedT = EaseOutBack(t);
+
+            plantVisual.transform.localScale = Vector3.LerpUnclamped(startScale, targetScale, easedT);
+            plantVisual.transform.localPosition = Vector3.LerpUnclamped(startPos, targetPos, easedT);
+
+            yield return null;
+        }
+
+        plantVisual.transform.localScale = targetScale;
+        plantVisual.transform.localPosition = targetPos;
+
+        plantAnimationCoroutine = null;
+    }
+
+    private void AnimateCrystalGrowth()
     {
         float targetScaleMult = Mathf.Pow(perCrystalScaleMultiplier, crystalsApplied);
-        if (targetScaleMult > maxScaleMultiplier) targetScaleMult = maxScaleMultiplier;
+        if (targetScaleMult > maxScaleMultiplier)
+            targetScaleMult = maxScaleMultiplier;
 
-        // plant grows
+        Vector3 plantTargetScale = plantStartScale * targetScaleMult;
+        Vector3 potTargetScale = potStartScale * (targetScaleMult * potScaleFactor);
+
+        if (crystalAnimationCoroutine != null)
+            StopCoroutine(crystalAnimationCoroutine);
+
+        crystalAnimationCoroutine = StartCoroutine(AnimateGrowthToTarget(plantTargetScale, potTargetScale));
+    }
+
+    private IEnumerator AnimateGrowthToTarget(Vector3 plantTargetScale, Vector3 potTargetScale)
+    {
+        Vector3 plantInitialScale = plantVisual != null ? plantVisual.transform.localScale : Vector3.one;
+        Vector3 potInitialScale = potVisual != null ? potVisual.localScale : Vector3.one;
+
+        float elapsed = 0f;
+
+        while (elapsed < crystalGrowDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / crystalGrowDuration);
+            float easedT = EaseOutBack(t);
+
+            if (plantVisual != null)
+            {
+                plantVisual.transform.localScale =
+                    Vector3.LerpUnclamped(plantInitialScale, plantTargetScale, easedT);
+            }
+
+            if (potVisual != null)
+            {
+                potVisual.localScale =
+                    Vector3.LerpUnclamped(potInitialScale, potTargetScale, easedT);
+            }
+
+            yield return null;
+        }
+
         if (plantVisual != null)
-            plantVisual.transform.localScale = plantStartScale * targetScaleMult;
+            plantVisual.transform.localScale = plantTargetScale;
 
-        // pot grows too
         if (potVisual != null)
-            potVisual.localScale = potStartScale * (targetScaleMult * potScaleFactor);
+            potVisual.localScale = potTargetScale;
+
+        crystalAnimationCoroutine = null;
+    }
+
+    private float EaseOutBack(float t)
+    {
+        float c1 = 1.70158f;
+        float c3 = c1 + 1f;
+        return 1f + c3 * Mathf.Pow(t - 1f, 3) + c1 * Mathf.Pow(t - 1f, 2);
     }
 }
