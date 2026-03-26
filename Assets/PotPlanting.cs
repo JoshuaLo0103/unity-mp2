@@ -34,14 +34,17 @@ public class PotPlanting : MonoBehaviour
     [Header("Planting Particles")]
     public ParticleSystem plantParticles;
 
+    [Header("Crystal Particles")]
+    public ParticleSystem crystalParticles;
+
     [Header("Haptics")]
     [SerializeField] private float plantHapticAmplitude = 0.7f;
     [SerializeField] private float plantHapticDuration = 0.5f;
 
     [Header("Sound")]
     [SerializeField] private AudioClip plantSuccessClip;
-    [SerializeField] [Range(0f, 1f)] private float plantSoundVolume = 1f;
-    [SerializeField] [Range(0f, 1f)] private float plantSoundSpatialBlend = 1f;
+    [SerializeField][Range(0f, 1f)] private float plantSoundVolume = 1f;
+    [SerializeField][Range(0f, 1f)] private float plantSoundSpatialBlend = 1f;
     [SerializeField] private float plantSoundMinDistance = 2f;
     [SerializeField] private float plantSoundMaxDistance = 14f;
     [SerializeField] private AudioRolloffMode plantSoundRolloffMode = AudioRolloffMode.Linear;
@@ -72,6 +75,9 @@ public class PotPlanting : MonoBehaviour
 
         if (plantParticles != null)
             plantParticles.Stop();
+
+        if (crystalParticles != null)
+            crystalParticles.Stop();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -151,6 +157,7 @@ public class PotPlanting : MonoBehaviour
 
         crystalsApplied += 1;
         AnimateCrystalGrowth();
+        PlayCrystalFeedback();
 
         return true;
     }
@@ -159,6 +166,12 @@ public class PotPlanting : MonoBehaviour
     {
         if (plantParticles != null)
             plantParticles.Play();
+    }
+
+    private void PlayCrystalFeedback()
+    {
+        if (crystalParticles != null)
+            crystalParticles.Play();
     }
 
     private IEnumerator AnimatePlantOnPlanting()
