@@ -74,7 +74,16 @@ public class SeedPortalDoor : MonoBehaviour
 
     private void CheckUnlock()
     {
-        if (unlocked || ResourceManager.I == null) return;
+        if (ResourceManager.I == null) return;
+
+        if (ResourceManager.I.seedPortalUnlocked)
+        {
+            unlocked = true;
+            SetUnlocked(true);
+            return;
+        }
+
+        if (unlocked) return;
 
         if (ResourceManager.I.seed >= requiredSeeds)
         {
@@ -85,12 +94,6 @@ public class SeedPortalDoor : MonoBehaviour
             ResourceManager.I.seedPortalUnlocked = true;
             SetUnlocked(true);
             PlayUnlockSound();
-            //Debug.Log($"[Portal] Unlocked at seed={ResourceManager.I.seed} (req={requiredSeeds})");
-        }
-        else
-        {
-            // Optional debug:
-            // Debug.Log($"[Portal] Locked seed={ResourceManager.I.seed}/{requiredSeeds}");
         }
     }
 

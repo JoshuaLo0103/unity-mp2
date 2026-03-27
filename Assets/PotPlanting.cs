@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
@@ -60,6 +61,8 @@ public class PotPlanting : MonoBehaviour
     private Coroutine crystalAnimationCoroutine;
 
     public bool IsPlanted => planted;
+    public int CrystalsApplied => crystalsApplied;
+    public string PotId => gameObject.scene.name + "/" + GetHierarchyPath(transform);
 
     private void Start()
     {
@@ -115,6 +118,8 @@ public class PotPlanting : MonoBehaviour
         PlayPlantSuccessSound();
         JuicyFeedbackEvents.Raise(JuicyFeedbackType.PlantSpore);
 
+        SaveManager.I?.SaveGame();
+
         Collider col = other.GetComponent<Collider>();
         if (col != null)
             col.enabled = false;
@@ -160,7 +165,61 @@ public class PotPlanting : MonoBehaviour
         AnimateCrystalGrowth();
         PlayCrystalFeedback();
 
+        SaveManager.I?.SaveGame();
+
         return true;
+    }
+
+    public void RestoreFromSave(bool wasPlanted, int savedCrystalsApplied)
+    {
+        planted = wasPlanted;
+        crystalsApplied = Mathf.Max(0, savedCrystalsApplied);
+
+        if (!planted)
+        {
+            currentMultiplier = 1.0;
+            currentContribution = 0.0;
+
+            if (plantVisual != null)
+            {
+                plantVisual.SetActive(false);
+                plantVisual.transform.localScale = plantStartScale;
+                plantVisual.transform.localPosition = plantStartLocalPosition;
+            }
+
+            if (potVisual != null)
+                potVisual.localScale = potStartScale;
+
+            return;
+        }
+
+        currentMultiplier = 1.0;
+        for (int i = 0; i < crystalsApplied; i++)
+        {
+            currentMultiplier *= perCrystalMultiplier;
+            if (currentMultiplier > maxTotalMultiplier)
+            {
+                currentMultiplier = maxTotalMultiplier;
+                break;
+            }
+        }
+
+        currentContribution = seedRateBase * currentMultiplier;
+
+        if (plantVisual != null)
+        {
+            plantVisual.SetActive(true);
+            plantVisual.transform.localPosition = plantStartLocalPosition;
+
+            float targetScaleMult = Mathf.Pow(perCrystalScaleMultiplier, crystalsApplied);
+            if (targetScaleMult > maxScaleMultiplier)
+                targetScaleMult = maxScaleMultiplier;
+
+            plantVisual.transform.localScale = plantStartScale * targetScaleMult;
+
+            if (potVisual != null)
+                potVisual.localScale = potStartScale * (targetScaleMult * potScaleFactor);
+        }
     }
 
     private void PlayPlantingFeedback()
@@ -172,7 +231,10 @@ public class PotPlanting : MonoBehaviour
     private void PlayCrystalFeedback()
     {
         if (crystalParticles != null)
+        {
+            crystalParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             crystalParticles.Play();
+        }
     }
 
     private IEnumerator AnimatePlantOnPlanting()
@@ -291,5 +353,16 @@ public class PotPlanting : MonoBehaviour
             plantSoundMinDistance,
             plantSoundMaxDistance,
             plantSoundRolloffMode);
+    }
+
+    private static string GetHierarchyPath(Transform current)
+    {
+        string path = current.name;
+        while (current.parent != null)
+        {
+            current = current.parent;
+            path = current.name + "/" + path;
+        }
+        return path;
     }
 }
