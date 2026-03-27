@@ -113,6 +113,7 @@ public class PotPlanting : MonoBehaviour
         PlayPlantingFeedback();
         SendPlantSuccessHaptics(other);
         PlayPlantSuccessSound();
+        JuicyFeedbackEvents.Raise(JuicyFeedbackType.PlantSpore);
 
         Collider col = other.GetComponent<Collider>();
         if (col != null)

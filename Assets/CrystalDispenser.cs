@@ -28,5 +28,6 @@ public class CrystalDispenser : MonoBehaviour
             return;
 
         Instantiate(crystalPrefab, spawnPoint.position, spawnPoint.rotation);
+        JuicyFeedbackEvents.Raise(JuicyFeedbackType.CrystalDispensed);
     }
 }

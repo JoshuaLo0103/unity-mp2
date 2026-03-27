@@ -85,6 +85,7 @@ public class MotherSeedClicker : MonoBehaviour
         UpdateVisuals(0f);
         PlayFlash();
         onClicked?.Invoke();
+        JuicyFeedbackEvents.Raise(JuicyFeedbackType.MotherSeedClick);
     }
 
     private void UpdateVisuals(float fill01)

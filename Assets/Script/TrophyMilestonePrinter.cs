@@ -144,6 +144,7 @@ public class TrophyMilestonePrinter : MonoBehaviour
         trophyInstance.transform.SetPositionAndRotation(shelfPos, shelfRot);
         trophyInstance.transform.SetParent(milestone.shelfSlot, true);
         onTrophyPlaced?.Invoke();
+        JuicyFeedbackEvents.Raise(JuicyFeedbackType.TrophyAchieved);
 
         sequenceRunning = false;
         CheckMilestones();

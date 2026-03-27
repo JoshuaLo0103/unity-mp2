@@ -37,6 +37,7 @@ public class CrystalSlotPowerUp : MonoBehaviour
 
         SendPowerUpSuccessHaptics(other);
         PlayPowerUpSuccessSound();
+        JuicyFeedbackEvents.Raise(JuicyFeedbackType.PlantPowerUp);
 
         // disappear
         Collider col = other.GetComponent<Collider>();

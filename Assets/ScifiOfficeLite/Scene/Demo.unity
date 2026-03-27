@@ -2387,6 +2387,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1418957007335967777, guid: ffd39571c14682942b10081c3295091c, type: 3}
   m_PrefabInstance: {fileID: 466617535}
   m_PrefabAsset: {fileID: 0}
+--- !u!134 &467808982
+PhysicsMaterial:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  serializedVersion: 2
+  m_DynamicFriction: 0.6
+  m_StaticFriction: 0.6
+  m_Bounciness: 0
+  m_FrictionCombine: 0
+  m_BounceCombine: 0
 --- !u!1001 &469888639
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4116,7 +4129,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 700278998}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 467808982}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

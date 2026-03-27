@@ -42,14 +42,22 @@ public class UIResourcePanel : MonoBehaviour
     {
         if (ResourceManager.I == null)
         {
-            seedText.text = "Seed: --";
-            crystalText.text = "Crystal: --";
-            sporeCostText.text = "Next Spore: --";
+            SetTextIfAssigned(seedText, "Seed: --");
+            SetTextIfAssigned(crystalText, "Crystal: --");
+            SetTextIfAssigned(sporeCostText, "Next Spore: --");
             return;
         }
 
-        seedText.text = $"Seed: {ResourceManager.I.seed:0}";
-        crystalText.text = $"Crystal: {ResourceManager.I.crystal:0}";
-        sporeCostText.text = $"Next Spore: {ResourceManager.I.CurrentSporeCost:0}";
+        SetTextIfAssigned(seedText, $"Seed: {ResourceManager.I.seed:0}");
+        SetTextIfAssigned(crystalText, $"Crystal: {ResourceManager.I.crystal:0}");
+        SetTextIfAssigned(sporeCostText, $"Next Spore: {ResourceManager.I.CurrentSporeCost:0}");
+    }
+
+    private static void SetTextIfAssigned(TMP_Text target, string value)
+    {
+        if (target == null)
+            return;
+
+        target.text = value;
     }
 }
