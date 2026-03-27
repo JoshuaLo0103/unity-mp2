@@ -1,47 +1,85 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TutorialPopup : MonoBehaviour
 {
     public static TutorialPopup I;
 
+    private const string TutorialSeenKey = "TUTORIAL_SEEN";
+
+    [Header("Assign in scene")]
     public GameObject tutorialPanel;
 
-    private bool tutorialShown = false;
-
-    void Awake()
+    private void Awake()
     {
-        // Singleton + persist across scenes
         if (I != null && I != this)
         {
             Destroy(gameObject);
             return;
         }
+
         I = this;
         DontDestroyOnLoad(gameObject);
     }
 
-    void Start()
+    private void OnEnable()
     {
-        ShowIfNeeded();
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void ShowIfNeeded()
+    private void OnDisable()
     {
-        if (!tutorialShown)
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void Start()
+    {
+        RefreshTutorialState();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (tutorialPanel == null)
         {
-            Time.timeScale = 0f;
-            tutorialPanel.SetActive(true);
-            tutorialShown = true;
+            TutorialPanelMarker marker = FindFirstObjectByType<TutorialPanelMarker>(FindObjectsInactive.Include);
+            if (marker != null)
+                tutorialPanel = marker.gameObject;
         }
+
+        RefreshTutorialState();
+    }
+
+    public void RefreshTutorialState()
+    {
+        bool tutorialSeen = PlayerPrefs.GetInt(TutorialSeenKey, 0) == 1;
+
+        if (!tutorialSeen)
+            ShowTutorial();
         else
-        {
+            HideTutorial();
+    }
+
+    private void ShowTutorial()
+    {
+        Time.timeScale = 0f;
+
+        if (tutorialPanel != null)
+            tutorialPanel.SetActive(true);
+    }
+
+    private void HideTutorial()
+    {
+        if (tutorialPanel != null)
             tutorialPanel.SetActive(false);
-        }
+
+        Time.timeScale = 1f;
     }
 
     public void CloseTutorial()
     {
-        tutorialPanel.SetActive(false);
-        Time.timeScale = 1f;
+        PlayerPrefs.SetInt(TutorialSeenKey, 1);
+        PlayerPrefs.Save();
+
+        HideTutorial();
     }
 }
